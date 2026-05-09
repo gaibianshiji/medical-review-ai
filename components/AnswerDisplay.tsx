@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bot, Loader2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface AnswerDisplayProps {
   answer: string;
@@ -19,18 +22,35 @@ export default function AnswerDisplay({ answer, isLoading }: AnswerDisplayProps)
   if (!answer && !isLoading) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 mt-4">
-      <h2 className="text-lg font-semibold text-gray-800 mb-3">AI 回答</h2>
-      <div ref={ref} className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap">
-        {isLoading && !answer ? (
-          <div className="flex items-center gap-2 text-gray-400">
-            <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full" />
-            正在生成回答...
-          </div>
-        ) : (
-          answer
-        )}
-      </div>
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Card className="mt-6 shadow-md">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+            <CardTitle className="flex items-center gap-2 text-blue-700">
+              <Bot className="h-5 w-5" />
+              AI 回答
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div ref={ref} className="prose prose-blue max-w-none">
+              {isLoading && !answer ? (
+                <div className="flex items-center gap-3 text-muted-foreground py-8">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>正在生成回答...</span>
+                </div>
+              ) : (
+                <div className="whitespace-pre-wrap text-base leading-relaxed">
+                  {answer}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </AnimatePresence>
   );
 }

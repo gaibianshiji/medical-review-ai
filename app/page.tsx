@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import { MessageSquare, Sparkles } from "lucide-react";
 import Header from "@/components/Header";
 import QuestionInput from "@/components/QuestionInput";
 import AnswerDisplay from "@/components/AnswerDisplay";
@@ -90,21 +92,50 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <Header subject={subject} onSubjectChange={setSubject} />
-      <div className="max-w-6xl mx-auto px-4 py-6 flex gap-6">
+      <div className="max-w-6xl mx-auto px-6 py-8 flex gap-6">
         <main className="flex-1">
-          <QuestionInput onSubmit={handleAsk} isLoading={isLoading} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <QuestionInput onSubmit={handleAsk} isLoading={isLoading} />
+          </motion.div>
+
           {currentQuestion && (
-            <div className="bg-blue-50 rounded-lg p-3 mt-4">
-              <p className="text-sm text-blue-800">
-                <span className="font-semibold">问题：</span>{currentQuestion}
-              </p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-blue-50 border border-blue-100 rounded-lg p-4 mt-6 flex items-start gap-3"
+            >
+              <MessageSquare className="h-5 w-5 text-blue-500 mt-0.5 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-blue-700">你的问题</p>
+                <p className="text-sm text-blue-600 mt-1">{currentQuestion}</p>
+              </div>
+            </motion.div>
           )}
+
           <AnswerDisplay answer={answer} isLoading={isLoading} />
+
+          {!currentQuestion && !answer && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-12 text-center"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-sm">
+                <Sparkles className="h-4 w-4" />
+                选择学科，输入问题，开始复习
+              </div>
+            </motion.div>
+          )}
         </main>
-        <aside className="w-72 shrink-0">
+
+        <aside className="w-80 shrink-0">
           <HistorySidebar
             history={history.map(({ id, question, subject, timestamp }) => ({
               id, question, subject, timestamp,

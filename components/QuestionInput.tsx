@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { Send, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface QuestionInputProps {
   onSubmit: (question: string) => void;
@@ -17,22 +21,43 @@ export default function QuestionInput({ onSubmit, isLoading }: QuestionInputProp
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4">
-      <textarea
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        placeholder="输入你的医学问题，例如：什么是高血压的诊断标准？"
-        className="w-full h-24 p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-        disabled={isLoading}
-      />
-      <button
-        onClick={handleSubmit}
-        disabled={isLoading || !question.trim()}
-        className="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-      >
-        {isLoading ? "AI 思考中..." : "提问"}
-      </button>
-    </div>
+    <Card className="shadow-md">
+      <CardContent className="p-6">
+        <Textarea
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="输入你的医学问题，例如：什么是高血压的诊断标准？（Enter 发送，Shift+Enter 换行）"
+          className="min-h-[120px] resize-none text-base"
+          disabled={isLoading}
+        />
+        <Button
+          onClick={handleSubmit}
+          disabled={isLoading || !question.trim()}
+          className="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+          size="lg"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              AI 思考中...
+            </>
+          ) : (
+            <>
+              <Send className="mr-2 h-5 w-5" />
+              提问
+            </>
+          )}
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
