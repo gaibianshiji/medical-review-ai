@@ -19,6 +19,12 @@ interface HeaderProps {
   onSubjectChange: (subject: string) => void;
 }
 
+function handleValueChange(value: string | null, onSubjectChange: (subject: string) => void) {
+  if (value) {
+    onSubjectChange(value);
+  }
+}
+
 export default function Header({ subject, onSubjectChange }: HeaderProps) {
   return (
     <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
@@ -36,7 +42,7 @@ export default function Header({ subject, onSubjectChange }: HeaderProps) {
           </div>
         </div>
         <div className="mt-4">
-          <Select value={subject} onValueChange={onSubjectChange}>
+          <Select value={subject} onValueChange={(value) => handleValueChange(value, onSubjectChange)}>
             <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white placeholder:text-white/50">
               <SelectValue placeholder="选择学科" />
             </SelectTrigger>
